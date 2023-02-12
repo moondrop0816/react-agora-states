@@ -1,15 +1,36 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DiscussionList from "./Pages/discussionList";
 
 function App() {
-  const [data, setData] = useState([]);
-  const [name, setName] = useState("");
-  const [title, setTitle] = useState("");
-  const [story, setStory] = useState("");
+  const [data, setData] = useState([]); // 전체 게시글 데이터
+  const [author, setAuthor] = useState(""); // 작성자
+  const [title, setTitle] = useState(""); // 제목
+  const [story, setStory] = useState(""); // 내용
+  let nextId = useRef(46); // 새로 등록될 id
+  const url = "http://localhost:4000/discussions";
 
-  const handleChangeName = (event) => {
-    setName(event.target.value);
+  const getData = () => {
+    return fetch(url).then((res) => res.json());
+  };
+
+  const postData = (newData) => {
+    return fetch(url, {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newData }),
+    })
+      .then((res) => res.json())
+      .then((json) => console.log(json));
+  };
+
+  useEffect(() => {
+    getData().then((json) => setData(json));
+    nextId.current = data[0].id + 1;
+  }, []);
+
+  const handleChangeAuthor = (event) => {
+    setAuthor(event.target.value);
   };
   const handleChangeTitle = (event) => {
     setTitle(event.target.value);
@@ -20,16 +41,26 @@ function App() {
 
   const addDiscussion = (event) => {
     event.preventDefault();
-    console.log("adddis");
-  };
 
-  const getData = () => {
-    return fetch("http://localhost:4000/discussions").then((res) => res.json());
-  };
+    const newData = {
+      id: nextId.current,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      title,
+      url: "",
+      author,
+      answer: {},
+      bodyHTML: story,
+      avatarUrl: null,
+    };
 
-  useEffect(() => {
-    getData().then((json) => setData(json));
-  }, []);
+    // post 요청 보내기
+    postData(newData);
+    setAuthor("");
+    setTitle("");
+    setStory("");
+    nextId.current += 1;
+  };
 
   return (
     <main>
@@ -59,8 +90,8 @@ function App() {
                   <input
                     type="text"
                     id="name"
-                    onChange={handleChangeName}
-                    value={name}
+                    onChange={handleChangeAuthor}
+                    value={author}
                     required
                   />
                   <label htmlFor="name">작성자</label>
