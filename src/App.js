@@ -7,11 +7,18 @@ function App() {
   const [author, setAuthor] = useState(""); // 작성자
   const [title, setTitle] = useState(""); // 제목
   const [story, setStory] = useState(""); // 내용
+  const [isChanged, setIsChanged] = useState(false);
   let nextId = useRef(46); // 새로 등록될 id
   const url = "http://localhost:4000/discussions";
 
   const getData = () => {
-    return fetch(url).then((res) => res.json());
+    return fetch(url)
+      .then((res) => res.json())
+      .then((json) => {
+        setData(json);
+        nextId.current = json[0].id + 1;
+        setIsChanged(false);
+      });
   };
 
   const postData = (newData) => {
@@ -24,10 +31,13 @@ function App() {
       .then((json) => console.log(json));
   };
 
+  const changeData = () => {
+    setIsChanged(true);
+  };
+
   useEffect(() => {
-    getData().then((json) => setData(json));
-    nextId.current = data[0].id + 1;
-  }, []);
+    getData();
+  }, [isChanged]);
 
   const handleChangeAuthor = (event) => {
     setAuthor(event.target.value);
@@ -121,7 +131,7 @@ function App() {
                 </div>
               </div>
               <div className="form__submit">
-                <input type="submit" value="질문하기" />
+                <input type="submit" value="질문하기" onClick={changeData} />
               </div>
             </form>
           </section>
