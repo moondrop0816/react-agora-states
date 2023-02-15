@@ -23,12 +23,17 @@ function App() {
 
   const postData = (newData) => {
     return fetch(url, {
-      method: "post",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ newData }),
-    })
-      .then((res) => res.json())
-      .then((json) => console.log(json));
+      body: JSON.stringify(newData),
+    });
+  };
+
+  const deleteData = (id) => {
+    setIsChanged(true);
+    return fetch(`${url}/${id}`, {
+      method: "DELETE",
+    });
   };
 
   const changeData = () => {
@@ -137,7 +142,7 @@ function App() {
           </section>
         </div>
       </section>
-      <DiscussionList data={data} />
+      <DiscussionList data={data} deleteData={deleteData} />
     </main>
   );
 }

@@ -1,4 +1,4 @@
-const Discussion = ({ data }) => {
+const Discussion = ({ data, deleteData }) => {
   const parseDate = (date) => {
     return new Date(date).toLocaleString("ko-KR");
   };
@@ -8,6 +8,13 @@ const Discussion = ({ data }) => {
   return (
     <li className="discussion__container">
       <div>
+        <button
+          type="button"
+          className="btn-delete"
+          onClick={() => deleteData(data.id)}
+        >
+          <span className="material-icons">delete</span>
+        </button>
         <div className="discussion__avatar--wrapper">
           <img
             className="discussion__avatar--image"
