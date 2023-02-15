@@ -30,9 +30,23 @@ function App() {
   };
 
   const deleteData = (id) => {
-    setIsChanged(true);
+    // setIsChanged(true);
     return fetch(`${url}/${id}`, {
       method: "DELETE",
+    });
+  };
+
+  const putData = (id, editTxt, updatedAt) => {
+    const updatedData = {
+      id,
+      title: editTxt,
+      updatedAt,
+    };
+
+    return fetch(url + `${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
     });
   };
 
@@ -142,7 +156,7 @@ function App() {
           </section>
         </div>
       </section>
-      <DiscussionList data={data} deleteData={deleteData} />
+      <DiscussionList data={data} deleteData={deleteData} putData={putData} />
     </main>
   );
 }

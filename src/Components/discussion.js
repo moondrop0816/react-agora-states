@@ -1,6 +1,14 @@
-const Discussion = ({ data, deleteData }) => {
+import { useState } from "react";
+
+const Discussion = ({ data, deleteData, putData }) => {
+  const [isEdit, setIsEdit] = useState(false);
+  const [editTxt, setEditTxt] = useState(data.title);
   const parseDate = (date) => {
     return new Date(date).toLocaleString("ko-KR");
+  };
+
+  const handleChangeEditTxt = (event) => {
+    setEditTxt(event.target.value);
   };
 
   const isAnswered = data.answer ? "material-icons complete" : "material-icons";
@@ -28,7 +36,17 @@ const Discussion = ({ data, deleteData }) => {
         </div>
         <div className="discussion__content">
           <h2 className="discussion__title">
-            <a href={data.url}>{data.title}</a>
+            <a href={data.url}>
+              {/* {isEdit ? ( */}
+              <textarea
+                type="text"
+                value={editTxt}
+                onChange={handleChangeEditTxt}
+              />
+              {/* ) : (
+                data.title
+              )} */}
+            </a>
           </h2>
           <div className="discussion__information">
             {`${data.author} / ${parseDate(data.createdAt)}`}
