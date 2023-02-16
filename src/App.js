@@ -7,7 +7,6 @@ function App() {
   const [author, setAuthor] = useState(""); // 작성자
   const [title, setTitle] = useState(""); // 제목
   const [story, setStory] = useState(""); // 내용
-  const [isChanged, setIsChanged] = useState(false);
   let nextId = useRef(46); // 새로 등록될 id
   const url = "http://localhost:4000/discussions";
 
@@ -17,7 +16,6 @@ function App() {
       .then((json) => {
         setData(json);
         nextId.current = json[0].id + 1;
-        setIsChanged(false);
       });
   };
 
@@ -26,37 +24,32 @@ function App() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newData),
-    });
+    }).then(() => getData());
   };
 
   const deleteData = (id) => {
-    // setIsChanged(true);
     return fetch(`${url}/${id}`, {
       method: "DELETE",
-    });
+    }).then(() => getData());
   };
 
-  const putData = (id, editTxt, updatedAt) => {
+  const putData = (id, title, updatedAt) => {
     const updatedData = {
       id,
-      title: editTxt,
+      title,
       updatedAt,
     };
 
-    return fetch(url + `${id}`, {
+    return fetch(url + `/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedData),
-    });
-  };
-
-  const changeData = () => {
-    setIsChanged(true);
+    }).then(() => getData());
   };
 
   useEffect(() => {
     getData();
-  }, [isChanged]);
+  }, []);
 
   const handleChangeAuthor = (event) => {
     setAuthor(event.target.value);
@@ -150,7 +143,7 @@ function App() {
                 </div>
               </div>
               <div className="form__submit">
-                <input type="submit" value="질문하기" onClick={changeData} />
+                <input type="submit" value="질문하기" />
               </div>
             </form>
           </section>

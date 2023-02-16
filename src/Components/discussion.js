@@ -11,6 +11,15 @@ const Discussion = ({ data, deleteData, putData }) => {
     setEditTxt(event.target.value);
   };
 
+  const editTitle = (event, id, title) => {
+    if (event.key === "Enter") {
+      const updatedAt = new Date().toISOString();
+      putData(id, title, updatedAt);
+      setIsEdit(false);
+      setEditTxt(data.title);
+    }
+  };
+
   const isAnswered = data.answer ? "material-icons complete" : "material-icons";
 
   return (
@@ -35,21 +44,22 @@ const Discussion = ({ data, deleteData, putData }) => {
           />
         </div>
         <div className="discussion__content">
-          <h2 className="discussion__title">
-            <a href={data.url}>
-              {/* {isEdit ? ( */}
-              <textarea
-                type="text"
-                value={editTxt}
-                onChange={handleChangeEditTxt}
-              />
-              {/* ) : (
-                data.title
-              )} */}
-            </a>
-          </h2>
+          {isEdit ? (
+            <textarea
+              type="text"
+              value={editTxt}
+              onChange={handleChangeEditTxt}
+              onKeyUp={(event) => editTitle(event, data.id, editTxt)}
+            />
+          ) : (
+            <h2 className="discussion__title" onClick={() => setIsEdit(true)}>
+              {data.title}
+            </h2>
+          )}
           <div className="discussion__information">
-            {`${data.author} / ${parseDate(data.createdAt)}`}
+            {`${data.author} / ` + data.createdAt !== data.updatedAt
+              ? parseDate(data.updatedAt)
+              : parseDate(data.createdAt)}
           </div>
         </div>
         <div className="discussion__answered">

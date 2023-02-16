@@ -197,7 +197,7 @@ main {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.discussion__title textarea {
+.discussion__content textarea {
   width: 100%;
   height: 3.5em;
   resize: none;
