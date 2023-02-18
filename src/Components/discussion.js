@@ -20,7 +20,8 @@ const Discussion = ({ data, deleteData, putData }) => {
     }
   };
 
-  const isAnswered = data.answer ? "material-icons complete" : "material-icons";
+  const isAnswered =
+    data.answer !== null ? "material-icons complete" : "material-icons";
 
   return (
     <li className="discussion__container">

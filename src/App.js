@@ -1,4 +1,5 @@
 import "./App.css";
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import DiscussionList from "./Pages/discussionList";
 
@@ -10,41 +11,89 @@ function App() {
   let nextId = useRef(46); // 새로 등록될 id
   const url = "http://localhost:4000/discussions";
 
-  const getData = () => {
-    return fetch(url)
-      .then((res) => res.json())
-      .then((json) => {
-        setData(json);
-        nextId.current = json[0].id + 1;
-      });
+  const getData = async () => {
+    // return fetch(url)
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     setData(json);
+    //     nextId.current = json[0].id + 1;
+    //   });
+
+    // axios
+    // return axios.get(url).then((res) => {
+    //   setData(res.data);
+    //   nextId.current = res.data[0].id + 1;
+    // });
+
+    // axios + async/await
+    try {
+      const res = await axios.get(url);
+      setData(res.data);
+      nextId.current = res.data[0].id + 1;
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const postData = (newData) => {
-    return fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newData),
-    }).then(() => getData());
+  const postData = async (newData) => {
+    // return fetch(url, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(newData),
+    // }).then(() => getData());
+
+    // axios
+    // return axios.post(url, newData).then(() => getData());
+
+    // axios + async/await
+    try {
+      await axios.post(url, newData);
+      getData();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const deleteData = (id) => {
-    return fetch(`${url}/${id}`, {
-      method: "DELETE",
-    }).then(() => getData());
+  const deleteData = async (id) => {
+    // return fetch(`${url}/${id}`, {
+    //   method: "DELETE",
+    // }).then(() => getData());
+
+    // axios
+    // return axios.delete(url + `/${id}`).then(() => getData());
+
+    // axios + async/await
+    try {
+      await axios.delete(url + `/${id}`);
+      getData();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const putData = (id, title, updatedAt) => {
+  const putData = async (id, title, updatedAt) => {
     const updatedData = {
       id,
       title,
       updatedAt,
     };
 
-    return fetch(url + `/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
-    }).then(() => getData());
+    // return fetch(url + `/${id}`, {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(updatedData),
+    // }).then(() => getData());
+
+    // axios
+    // return axios.put(url + `/${id}`, updatedData).then(() => getData());
+
+    // axios + async/await
+    try {
+      await axios.put(url + `/${id}`, updatedData);
+      getData();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -71,7 +120,7 @@ function App() {
       title,
       url: "",
       author,
-      answer: {},
+      answer: null,
       bodyHTML: story,
       avatarUrl: null,
     };
